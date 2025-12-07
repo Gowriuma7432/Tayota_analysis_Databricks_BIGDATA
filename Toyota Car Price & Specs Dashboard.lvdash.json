@@ -1,0 +1,734 @@
+{
+  "datasets": [
+    {
+      "name": "52315cd1",
+      "displayName": "Price",
+      "queryLines": [
+        "SELECT price FROM toyota_clean;\r\n"
+      ],
+      "catalog": "workspace",
+      "schema": "toyota_project"
+    },
+    {
+      "name": "74493b90",
+      "displayName": "q6_toyota_kpis",
+      "queryLines": [
+        "SELECT\r\n",
+        "  COUNT(*) AS total_cars,\r\n",
+        "  ROUND(AVG(price), 2) AS avg_price,\r\n",
+        "  MAX(price) AS max_price,\r\n",
+        "  ROUND(AVG(mileage), 2) AS avg_mileage\r\n",
+        "FROM toyota_clean;\r\n"
+      ],
+      "catalog": "workspace",
+      "schema": "toyota_project"
+    },
+    {
+      "name": "714f0760",
+      "displayName": "Untitled dataset",
+      "queryLines": [
+        "USE CATALOG `workspace`;\n",
+        "USE SCHEMA `toyota_project`;\n",
+        "\n",
+        "SELECT\n",
+        "  model,\n",
+        "  ROUND(AVG(price), 2) AS avg_price,\n",
+        "  COUNT(*) AS num_cars\n",
+        "FROM toyota_clean\n",
+        "GROUP BY model\n",
+        "HAVING COUNT(*) >= 10\n",
+        "ORDER BY avg_price DESC\n",
+        "LIMIT 10;\n"
+      ]
+    },
+    {
+      "name": "7db87503",
+      "displayName": "Untitled dataset",
+      "queryLines": [
+        "USE CATALOG `workspace`;\n",
+        "USE SCHEMA `toyota_project`;\n",
+        "\n",
+        "SELECT\n",
+        "  fuelType,\n",
+        "  transmission,\n",
+        "  ROUND(AVG(price), 2) AS avg_price,\n",
+        "  COUNT(*) AS num_cars\n",
+        "FROM toyota_clean\n",
+        "GROUP BY fuelType, transmission\n",
+        "ORDER BY avg_price DESC;\n"
+      ]
+    },
+    {
+      "name": "f4885234",
+      "displayName": "Untitled dataset",
+      "queryLines": [
+        "USE CATALOG `workspace`;\n",
+        "USE SCHEMA `toyota_project`;\n",
+        "\n",
+        "SELECT\n",
+        "  car_age,\n",
+        "  ROUND(AVG(price), 2) AS avg_price,\n",
+        "  ROUND(AVG(depreciation_score), 2) AS avg_depreciation_score\n",
+        "FROM toyota_clean\n",
+        "GROUP BY car_age\n",
+        "ORDER BY car_age;\n"
+      ]
+    },
+    {
+      "name": "7f0d3bfc",
+      "displayName": "Untitled dataset",
+      "queryLines": [
+        "USE CATALOG `workspace`;\n",
+        "USE SCHEMA `toyota_project`;\n",
+        "\n",
+        "SELECT\n",
+        "  engineSize,\n",
+        "  ROUND(AVG(fuel_efficiency_index), 3) AS avg_fuel_efficiency,\n",
+        "  ROUND(AVG(mpg), 2) AS avg_mpg,\n",
+        "  COUNT(*) AS num_cars\n",
+        "FROM toyota_clean\n",
+        "GROUP BY engineSize\n",
+        "ORDER BY engineSize;\n"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "f784beb6",
+      "displayName": "Toyota_analysis",
+      "layout": [
+        {
+          "widget": {
+            "name": "7a2862e7",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "714f0760",
+                  "fields": [
+                    {
+                      "name": "model",
+                      "expression": "`model`"
+                    },
+                    {
+                      "name": "sum(avg_price)",
+                      "expression": "SUM(`avg_price`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "model",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(avg_price)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "frame": {
+                "title": "Top 10 Most Expensive Toyota Models (Average Price)",
+                "showTitle": true
+              },
+              "mark": {
+                "layout": "group"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 1,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "527172cf",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "7db87503",
+                  "fields": [
+                    {
+                      "name": "sum(avg_price)",
+                      "expression": "SUM(`avg_price`)"
+                    },
+                    {
+                      "name": "fuelType",
+                      "expression": "`fuelType`"
+                    },
+                    {
+                      "name": "transmission",
+                      "expression": "`transmission`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "heatmap",
+              "encodings": {
+                "x": {
+                  "fieldName": "fuelType",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "transmission",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "color": {
+                  "fieldName": "sum(avg_price)",
+                  "scale": {
+                    "type": "quantitative",
+                    "colorRamp": {
+                      "mode": "scheme",
+                      "scheme": "reds"
+                    }
+                  }
+                }
+              },
+              "mark": {
+                "layout": "layer"
+              },
+              "frame": {
+                "title": "Average Price by Fuel Type and Transmission",
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 13,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "e4ac2ec4",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "f4885234",
+                  "fields": [
+                    {
+                      "name": "car_age",
+                      "expression": "`car_age`"
+                    },
+                    {
+                      "name": "sum(avg_price)",
+                      "expression": "SUM(`avg_price`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "car_age",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(avg_price)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "frame": {
+                "title": "Average Price vs Car Age (Depreciation Trend)",
+                "showTitle": true
+              },
+              "mark": {
+                "layout": "layer"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 19,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "7ee1d6ce",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "7f0d3bfc",
+                  "fields": [
+                    {
+                      "name": "engineSize",
+                      "expression": "`engineSize`"
+                    },
+                    {
+                      "name": "avg_fuel_efficiency",
+                      "expression": "`avg_fuel_efficiency`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "scatter",
+              "encodings": {
+                "x": {
+                  "fieldName": "engineSize",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "avg_fuel_efficiency",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "frame": {
+                "title": "Engine Size vs Fuel Efficiency Index",
+                "showTitle": true
+              },
+              "mark": {
+                "colors": [
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 6
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 2
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 3
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 4
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 5
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 6
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 7
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 8
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 9
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 10
+                  }
+                ],
+                "layout": "layer"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 25,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "059c0f0f",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "52315cd1",
+                  "fields": [
+                    {
+                      "name": "bin(price, binWidth=5000)",
+                      "expression": "BIN_FLOOR(`price`, 5000)"
+                    },
+                    {
+                      "name": "count(*)",
+                      "expression": "COUNT(`*`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "histogram",
+              "encodings": {
+                "x": {
+                  "fieldName": "bin(price, binWidth=5000)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "count(*)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "mark": {
+                "colors": [
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 6
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 2
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 3
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 4
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 5
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 6
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 7
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 8
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 9
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 10
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Distribution of Toyota Car Prices"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 7,
+            "width": 3,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "fbdeae3f",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "74493b90",
+                  "fields": [
+                    {
+                      "name": "total_cars",
+                      "expression": "`total_cars`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "total_cars"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Total Cars in Dataset"
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 7,
+            "width": 3,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "1fb64c86",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "74493b90",
+                  "fields": [
+                    {
+                      "name": "avg_mileage",
+                      "expression": "`avg_mileage`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "avg_mileage"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Average Milage\n"
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 9,
+            "width": 3,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "221290b1",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "74493b90",
+                  "fields": [
+                    {
+                      "name": "max_price",
+                      "expression": "`max_price`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "max_price"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "HIghest Car Price"
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 11,
+            "width": 3,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "67526b77",
+            "queries": [
+              {
+                "name": "dashboards/01f0d211fc8412548fde1cb23e649c78/datasets/01f0d2133e7d10119249c782d07c7083_fuelType",
+                "query": {
+                  "datasetName": "7db87503",
+                  "fields": [
+                    {
+                      "name": "fuelType",
+                      "expression": "`fuelType`"
+                    },
+                    {
+                      "name": "fuelType_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-single-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "fuelType",
+                    "queryName": "dashboards/01f0d211fc8412548fde1cb23e649c78/datasets/01f0d2133e7d10119249c782d07c7083_fuelType"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 2,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "327b4d6f",
+            "queries": [
+              {
+                "name": "dashboards/01f0d211fc8412548fde1cb23e649c78/datasets/01f0d2133e7d10119249c782d07c7083_transmission",
+                "query": {
+                  "datasetName": "7db87503",
+                  "fields": [
+                    {
+                      "name": "transmission",
+                      "expression": "`transmission`"
+                    },
+                    {
+                      "name": "transmission_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-single-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "transmission",
+                    "queryName": "dashboards/01f0d211fc8412548fde1cb23e649c78/datasets/01f0d2133e7d10119249c782d07c7083_transmission"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 2,
+            "y": 0,
+            "width": 2,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "e8f27515",
+            "queries": [
+              {
+                "name": "dashboards/01f0d211fc8412548fde1cb23e649c78/datasets/01f0d212e8bc16d4a8d876ef30dbb549_model",
+                "query": {
+                  "datasetName": "714f0760",
+                  "fields": [
+                    {
+                      "name": "model",
+                      "expression": "`model`"
+                    },
+                    {
+                      "name": "model_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-single-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "model",
+                    "queryName": "dashboards/01f0d211fc8412548fde1cb23e649c78/datasets/01f0d212e8bc16d4a8d876ef30dbb549_model"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 0,
+            "width": 2,
+            "height": 1
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    },
+    "applyModeEnabled": false
+  }
+}
